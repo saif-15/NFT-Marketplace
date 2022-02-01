@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 *,
 *::before,
 *::after {
@@ -32,6 +33,7 @@ body {
   text-rendering: optimizeSpeed;
   line-height: 1.5;
   background-color: white;
+  font-family: 'Montserrat', sans-serif;
 }
 
 ul[class],
@@ -57,4 +59,7 @@ button,
 textarea,
 select {
   font: inherit;
+}
+.ant-spin-dot-item {
+  background-color: #21BF96;
 }

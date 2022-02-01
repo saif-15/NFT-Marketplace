@@ -1,150 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useMoralis, useMoralisQuery } from "react-moralis";
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
-import { Table, Tag, Space } from "antd";
-import { PolygonCurrency} from "./Chains/Logos";
+import { Table, Spin, Space } from "antd";
+import { PolygonCurrency } from "./Chains/Logos";
 import moment from "moment";
 
 const styles = {
   table: {
     margin: "0 auto",
-    width: "1000px",
+    width: "1250px",
+    fontSize: "15px",
+    fontWeight: "700",
   },
+
 };
+
+
 
 function NFTMarketTransactions() {
   const { walletAddress } = useMoralisDapp();
   const { Moralis } = useMoralis();
-  const queryItemImages = useMoralisQuery("ItemImages");
-  const fetchItemImages = JSON.parse(
-    JSON.stringify(queryItemImages.data, [
-      "nftContract",
-      "tokenId",
-      "name",
-      "image",
-    ])
-  );
-  const queryMarketItems = useMoralisQuery("MarketItems");
-  const fetchMarketItems = JSON.parse(
-    JSON.stringify(queryMarketItems.data, [
-      "updatedAt",
-      "price",
-      "nftContract",
-      "itemId",
-      "sold",
-      "tokenId",
-      "seller",
-      "owner",
-    ])
-  )
-    .filter(
-      (item) => item.seller === walletAddress || item.owner === walletAddress
-    )
-    .sort((a, b) =>
-      a.updatedAt < b.updatedAt ? 1 : b.updatedAt < a.updatedAt ? -1 : 0
-    );
-
-  function getImage(addrs, id) {
-    const img = fetchItemImages.find(
-      (element) =>
-        element.nftContract === addrs &&
-        element.tokenId === id
-    );
-    return img?.image;
-  }
-
-  function getName(addrs, id) {
-    const nme = fetchItemImages.find(
-      (element) =>
-        element.nftContract === addrs &&
-        element.tokenId === id
-    );
-    return nme?.name;
-  }
+  const transactions = useMoralisQuery("EthTransactions");
 
 
-
-  const columns = [
-    {
-      title: "Date",
-      dataIndex: "date",
-      key: "date",
-    },
-    {
-      title: "Item",
-      key: "item",
-      render: (text, record) => (
-        <Space size="middle">
-          <img src={getImage(record.collection, record.item)} style={{ width: "40px", borderRadius:"4px"}} />
-          <span>#{record.item}</span>
-        </Space>
-      ),
-    },
-    {
-      title: "Collection",
-      key: "collection",
-      render: (text, record) => (
-        <Space size="middle">
-          <span>{getName(record.collection, record.item)}</span>
-        </Space>
-      ),
-    },
-    {
-      title: "Transaction Status",
-      key: "tags",
-      dataIndex: "tags",
-      render: (tags) => (
-        <>
-          {tags.map((tag) => {
-            let color = "geekblue";
-            let status = "BUY";
-            if (tag === false) {
-              color = "volcano";
-              status = "waiting";
-            } else if (tag === true) {
-              color = "green";
-              status = "confirmed";
-            }
-            if (tag === walletAddress) {
-              status = "SELL";
-            }
-            return (
-              <Tag color={color} key={tag}>
-                {status.toUpperCase()}
-              </Tag>
-            );
-          })}
-        </>
-      ),
-    },
-    {
-      title: "Price",
-      key: "price",
-      dataIndex: "price",
-      render: (e) => (
-        <Space size="middle">
-          <PolygonCurrency/>
-          <span>{e}</span>
-        </Space>
-      ),
+  const turncate = (string) => {
+    if (string.length > 35) {
+      string = string.substring(0, 4) + "......." + string.substring(string.length - 7, string.length);
     }
-  ];
+    return string;
+  }
 
-  const data = fetchMarketItems?.map((item, index) => ({
-    key: index,
-    date: moment(item.updatedAt).format("DD-MM-YYYY HH:mm"),
-    collection: item.nftContract,
-    item: item.tokenId,
-    tags: [item.seller, item.sold],
-    price: item.price / ("1e" + 18)
-  }));
+  const data = transactions.
+    data.map((item, index) => ({
+      key: index,
+      block_hash: turncate(item.attributes.block_hash),
+      block_number: turncate(item.attributes.block_number),
+      date: moment(item.attributes.createdAt).format("DD-MM-YY hh:mm A"),
+      status: String(item.attributes.confirmed),
+      from_address: turncate(item.attributes.from_address),
+      to_address: turncate(item.attributes.to_address),
+      price: Moralis.Units.FromWei(item.attributes.value),
+      gas_price: Moralis.Units.FromWei(item.attributes.gas)
+    }));
 
   return (
     <>
       <div>
-        <div style={styles.table}>
-          <Table columns={columns} dataSource={data} />
-        </div>
+        {transactions.data.length != 0 ?
+          <div style={styles.table}>
+            <Table columns={columns} dataSource={data} />
+          </div>
+          : <Space size="middle" >
+            <Spin size="large" />
+          </Space>}
       </div>
     </>
   );
@@ -153,27 +61,56 @@ function NFTMarketTransactions() {
 export default NFTMarketTransactions;
 const columns = [
   {
+    title: "Block Hash",
+    dataIndex: "block_hash",
+    key: "block_hash",
+    filterSearch: true
+  },
+  {
+    title: "Block Number",
+    dataIndex: "block_number",
+    key: "block_number",
+    filterSearch: true,
+    sorter: {
+      compare: (a, b) => a.block_number - b.block_number,
+      multiple: 1,
+    },
+  },
+  {
     title: "Date",
     dataIndex: "date",
     key: "date",
   },
   {
-    title: "Item",
-    key: "item",
-
+    title: "Status",
+    key: "status",
+    dataIndex: "status",
+    filterSearch: true,
+    width: "100px"
   },
   {
-    title: "Collection",
-    key: "collection",
+    title: "From Address",
+    key: "from_address",
+    dataIndex: "from_address",
+    filterSearch: true
   },
   {
-    title: "Transaction Status",
-    key: "tags",
-    dataIndex: "tags",
+    title: "To Address",
+    key: "to_address",
+    dataIndex: "to_address",
+    filterSearch: true
   },
   {
     title: "Price",
     key: "price",
     dataIndex: "price",
-  }
+    filterSearch: true
+  },
+  {
+    title: "Gas Price",
+    key: "gas_price",
+    dataIndex: "gas_price",
+    filterSearch: true
+  },
+
 ];

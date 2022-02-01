@@ -9,34 +9,35 @@ const styles = {
   item: {
     display: "flex",
     alignItems: "center",
-    height: "42px",
-    fontWeight: "500",
-    fontFamily: "Roboto, sans-serif",
+    height: "50px",
+    fontWeight: "700",
+    fontFamily: "Montserrat,Roboto, sans-serif",
     fontSize: "14px",
-    padding: "0 10px",
+    padding: "10px 10px",
+
   },
   button: {
     border: "2px solid rgb(231, 234, 243)",
-    borderRadius: "12px",
+    borderRadius: "10px",
   },
 };
 
 const menuItems = [
+  // {
+  //   key: "0x1",
+  //   value: "Ethereum",
+  //   icon: <ETHLogo />,
+  // },
   {
-    key: "0x1",
-    value: "Ethereum",
+    key: "0x539",
+    value: "Local Chain",
     icon: <ETHLogo />,
   },
-  // {
-  //   key: "0x539",
-  //   value: "Local Chain",
-  //   icon: <ETHLogo />,
-  // },
-  // {
-  //   key: "0x3",
-  //   value: "Ropsten Testnet",
-  //   icon: <ETHLogo />,
-  // },
+  {
+    key: "0x3",
+    value: "Ropsten Testnet",
+    icon: <ETHLogo />,
+  },
   // {
   //   key: "0x4",
   //   value: "Rinkeby Testnet",
@@ -67,11 +68,11 @@ const menuItems = [
   //   value: "Polygon",
   //   icon: <PolygonLogo />,
   // },
-  {
-    key: "0x13881",
-    value: "Mumbai",
-    icon: <PolygonLogo />,
-  },
+  // {
+  //   key: "0x13881",
+  //   value: "Mumbai",
+  //   icon: <PolygonLogo />,
+  // },
   // {
   //   key: "0xa86a",
   //   value: "Avalanche",
@@ -103,7 +104,7 @@ function Chains() {
           <span style={{ marginLeft: "5px" }}>{item.value}</span>
         </Menu.Item>
       ))}
-    </Menu> 
+    </Menu>
   );
 
   return (
