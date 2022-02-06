@@ -89,9 +89,9 @@ export const Card = styled.section`
   .card__info-box-left {
   
     color: ${colors.darkBlueCardBG};
-    gap: 5px;
+    gap: 10px;
     font-weight: ${fontWidth.semiBold};
-    font-size: ${fontSize.large};
+    font-size: ${fontSize.xlarge};
   }
   .card__info-box-right {
 
@@ -101,7 +101,7 @@ export const Card = styled.section`
   }
   .card__footer {
     padding:10px ;
-    border-top: 1px solid ${colors.darkBlueLine};
+    border-top: 2px solid ${colors.darkBlueLine};
     
     margin: 20px 0 0 0;
     .avatar {

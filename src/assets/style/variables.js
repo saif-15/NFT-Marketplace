@@ -22,6 +22,7 @@ export const fontSize = {
   large: "22px",
   medium: "16px",
   small: "14px",
+  xlarge:"25px",
 };
 export const fontWidth = {
   light: 300,

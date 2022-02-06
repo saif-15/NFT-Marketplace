@@ -81,20 +81,20 @@ const App = ({ isServerInfo }) => {
               width: "100%",
 
             }}
-            defaultSelectedKeys={["nftMarket"]}
+            defaultSelectedKeys={["marketplace"]}
             color={"#00F0FF"}
           >
-            <Menu.Item key="nftMarket" onClick={() => setInputValue("explore")} >
-              <NavLink to="/NFTMarketPlace">Explore Market</NavLink>
+            <Menu.Item key="marketplace" onClick={() => setInputValue("explore")} >
+              <NavLink to="/marketplace">Explore Market</NavLink>
             </Menu.Item>
-            <Menu.Item key="nft">
-              <NavLink to="/nftBalance"> My Collection</NavLink>
+            <Menu.Item key="collection">
+              <NavLink to="/collection"> My Collection</NavLink>
             </Menu.Item>
             <Menu.Item key="transactions">
-              <NavLink to="/Transactions"> Transactions</NavLink>
+              <NavLink to="/transactions"> Transactions</NavLink>
             </Menu.Item>
-            <Menu.Item key="addNft">
-              <NavLink to="/addNft"> Create Token</NavLink>
+            <Menu.Item key="create">
+              <NavLink to="/create"> Create Token</NavLink>
             </Menu.Item>
           </Menu>
           <div style={styles.headerRight}>
@@ -105,21 +105,21 @@ const App = ({ isServerInfo }) => {
         </Header>
         <div style={styles.content}>
           <Switch>
-            <Route path="/nftBalance">
+            <Route path="/collection">
               <NFTBalance />
             </Route>
-            <Route path="/AddNft">
+            <Route path="/create">
               <CreateNft />
 
             </Route>
-            <Route path="/NFTMarketPlace">
+            <Route path="/marketplace">
               <NFTTokenIds inputValue={inputValue} setInputValue={setInputValue} />
             </Route>
-            <Route path="/Transactions">
+            <Route path="/transactions">
               <NFTMarketTransactions />
             </Route>
           </Switch>
-          <Redirect to="/NFTMarketPlace" />
+          <Redirect to="/marketplace" />
         </div>
       </Router>
     </Layout>

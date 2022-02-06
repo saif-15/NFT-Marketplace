@@ -13,7 +13,7 @@ import { FileSearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
 import { Button, Card, Tooltip } from "antd";
 
-function MarketItem({ uri, minter, address, tokenId, owner, onMarketplace, createdAt, price, itemId }) {
+function MarketItem({ uri, minter, address, tokenId, owner, onMarketplace, createdAt, price, itemId, }) {
     const { Panel } = Collapse;
 
     const { Moralis } = useMoralis();
@@ -59,9 +59,13 @@ function MarketItem({ uri, minter, address, tokenId, owner, onMarketplace, creat
                     title: "NFT Purchase",
                     content: "Your NFT is purchased successfully",
                 });
+
                 setTimeout(() => {
                     modal.destroy();
+
+                    setVisibility(false)
                 }, 2000);
+                //    callback();
             },
             onError: () => {
                 const modal = Modal.error({
@@ -72,7 +76,10 @@ function MarketItem({ uri, minter, address, tokenId, owner, onMarketplace, creat
                     modal.destroy();
                 }, 2000);
             }
+
         })
+
+
     }
 
     const nftModal = () => {

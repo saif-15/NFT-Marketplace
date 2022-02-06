@@ -6,11 +6,14 @@ import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvide
 import { getExplorer } from "helpers/networks";
 import NFTCard from "components/NFTCard";
 import { useWeb3ExecuteFunction, useMoralis } from "react-moralis";
+import { Flex } from "uikit/Flex/Flex";
 const { Meta } = Card;
 
 const styles = {
   heading: {
     fontSize: "35px",
+    marginTop: "40px",
+    fontWeight: "700"
 
   },
   NFTs: {
@@ -35,27 +38,23 @@ const styles = {
 };
 
 function NFTBalance() {
-  const { NFTBalance, fetchSuccess } = useNFTBalance();
-  const { chainId, marketAddress, contractABI, walletAddress } = useMoralisDapp();
-  const { Moralis, isAuthenticated, user } = useMoralis();
-  const [visible, setVisibility] = useState(false);
-  const [nftToSend, setNftToSend] = useState(null);
-  const [price, setPrice] = useState(1);
+  const { walletAddress } = useMoralisDapp();
+  const { Moralis, isAuthenticated, } = useMoralis();
   const [loading, setLoading] = useState(false);
-  const contractProcessor = useWeb3ExecuteFunction();
   const [userNFTs, setUserNFTs] = useState([]);
 
 
   const getUserNFTs = async (walletAddress) => {
     setLoading(true)
-    const nftsQuery = new Moralis.Query("MintedNFTs");
-    nftsQuery.equalTo("owner_of_nft", walletAddress)
-    nftsQuery.equalTo("onMarketplace", false)
-    const nfts = await nftsQuery.find();
-    setUserNFTs(nfts);
-    setLoading(false);
+    setTimeout(async () => {
+      const nftsQuery = new Moralis.Query("MintedNFTs");
+      nftsQuery.equalTo("owner_of_nft", walletAddress)
+      nftsQuery.equalTo("onMarketplace", false)
+      const nfts = await nftsQuery.find();
+      setUserNFTs(nfts);
+      setLoading(false);
 
-
+    }, 5000);
   }
 
 
@@ -63,7 +62,6 @@ function NFTBalance() {
 
     if (isAuthenticated)
       getUserNFTs(walletAddress);
-
 
   }, [walletAddress]);
 
@@ -89,9 +87,14 @@ function NFTBalance() {
               />
             })
             : <h2>You have 0 NFTs Owned or Minted</h2>
-          : <Space size="middle" >
+          :
+          <Space size="middle" style={{
+            height: "100vh",
+            width: "50%"
+          }} >
             <Spin size="large" />
           </Space>
+
         }
       </div>
 

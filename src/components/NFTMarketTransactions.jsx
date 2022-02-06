@@ -7,10 +7,9 @@ import moment from "moment";
 
 const styles = {
   table: {
-    margin: "0 auto",
-    width: "1250px",
+    width: "95vw",
     fontSize: "15px",
-    fontWeight: "700",
+    fontWeight: "800",
   },
 
 };
@@ -25,7 +24,7 @@ function NFTMarketTransactions() {
 
   const turncate = (string) => {
     if (string.length > 35) {
-      string = string.substring(0, 4) + "......." + string.substring(string.length - 7, string.length);
+      string = string.substring(0, 4) + "......." + string.substring(string.length - 10, string.length);
     }
     return string;
   }
@@ -33,10 +32,10 @@ function NFTMarketTransactions() {
   const data = transactions.
     data.map((item, index) => ({
       key: index,
-      block_hash: turncate(item.attributes.block_hash),
+      transaction_hash: turncate(item.attributes.hash),
       block_number: turncate(item.attributes.block_number),
       date: moment(item.attributes.createdAt).format("DD-MM-YY hh:mm A"),
-      status: String(item.attributes.confirmed),
+      status: item.attributes.confirmed ? "Completed" : "In Progress",
       from_address: turncate(item.attributes.from_address),
       to_address: turncate(item.attributes.to_address),
       price: Moralis.Units.FromWei(item.attributes.value),
@@ -50,7 +49,10 @@ function NFTMarketTransactions() {
           <div style={styles.table}>
             <Table columns={columns} dataSource={data} />
           </div>
-          : <Space size="middle" >
+          : <Space size="middle" style={{
+            height: "100vh",
+            width: "50%"
+          }} >
             <Spin size="large" />
           </Space>}
       </div>
@@ -61,10 +63,10 @@ function NFTMarketTransactions() {
 export default NFTMarketTransactions;
 const columns = [
   {
-    title: "Block Hash",
-    dataIndex: "block_hash",
-    key: "block_hash",
-    filterSearch: true
+    title: "Transaction Hash",
+    dataIndex: "transaction_hash",
+    key: "transaction_hash",
+   filterSearch: true
   },
   {
     title: "Block Number",
@@ -72,7 +74,7 @@ const columns = [
     key: "block_number",
     filterSearch: true,
     sorter: {
-      compare: (a, b) => a.block_number - b.block_number,
+      compare: (a, b) => b.block_number - a.block_number,
       multiple: 1,
     },
   },

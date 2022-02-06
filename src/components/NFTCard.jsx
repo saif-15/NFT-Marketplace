@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { EthereumIcom, ClockIcon, ViewIcon } from "assets/svg";
 import { BoxShadow, Card as StyledCard } from "./StyledCard";
+import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
 import image from "assets/img/image-avatar.png";
-import { Image, Modal, Alert, Badge, Input, Collapse } from "antd";
+import { Image, Modal, Alert, Badge, Input, Collapse, Switch } from "antd";
 import abis from "./abis";
 import { Typography } from 'antd';
 import moment from "moment";
@@ -20,6 +21,8 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
     const { Panel } = Collapse;
 
     const { Moralis } = useMoralis();
+    const { walletAddress } = useMoralisDapp();
+
     const contractProcessor = useWeb3ExecuteFunction();
     const [metadata, setMetadata] = useState({});
     const [visibility, setVisibility] = useState(false);
@@ -27,6 +30,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
     const [infoModal, setInfoModal] = useState(false);
     const [ethAddress, setEthAddress] = useState("");
     const [ethPrice, setEthPrice] = useState("");
+    const [isFixedPrice, setFixedPrice] = useState(true);
     const { Title, Paragraph } = Typography;
 
 
@@ -56,56 +60,72 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
     }, [])
 
     const sellOnMarketPlace = async () => {
-        let options = {
-            contractAddress: contractAddresses.marketplaceContract,
-            functionName: isFirstTime ? abis.createMarketItem.functionName : abis.putItemToResell.functionName,
-            abi: isFirstTime ? abis.createMarketItem.abi : abis.putItemToResell.abi,
-            params: isFirstTime ? {
-                nftContract: address,
-                tokenId: tokenId,
-                price: Moralis.Units.ETH(ethPrice)
-            } : {
-                nftContract: address,
-                itemId: itemId,
-                newPrice: Moralis.Units.ETH(ethPrice)
+        if (parseFloat(ethPrice) > 0) {
+            let options = {
+                contractAddress: contractAddresses.marketplaceContract,
+                functionName: isFirstTime ? abis.createMarketItem.functionName : abis.putItemToResell.functionName,
+                abi: isFirstTime ? abis.createMarketItem.abi : abis.putItemToResell.abi,
+                params: isFirstTime ? {
+                    nftContract: address,
+                    tokenId: tokenId,
+                    price: Moralis.Units.ETH(ethPrice)
+                } : {
+                    nftContract: address,
+                    itemId: itemId,
+                    newPrice: Moralis.Units.ETH(ethPrice)
 
-            },
-            msgValue: Moralis.Units.ETH(contractAddresses.listingPrice)
-        };
-
-        await contractProcessor.fetch({
-            params: options,
-            onSuccess: () => {
-                const modal = Modal.success({
-                    title: "NFT Listing",
-                    content: "Your NFT is listed successfully",
                 },
-                    callback()
+                msgValue: Moralis.Units.ETH(contractAddresses.listingPrice)
+            };
+
+            await contractProcessor.fetch({
+                params: options,
+                onSuccess: () => {
+                    const modal = Modal.success({
+                        title: "NFT Listing",
+                        content: "Your NFT is listed successfully",
+                    },
+                    );
+                    setTimeout(() => {
+                        modal.destroy();
+                    }, 2000);
+                },
+                onError: () => {
+                    const modal = Modal.error({
+                        title: "NFT Listing",
+                        content: "Something went wrong",
+                    });
+                    setTimeout(() => {
+                        modal.destroy();
+                    }, 2000);
+                }
+            })
+        } else {
+            const call = () => {
+                const modal = Modal.error({
+                    title: "NFT Listing",
+                    content: "Please Enter Price",
+                },
                 );
                 setTimeout(() => {
                     modal.destroy();
                 }, 2000);
-            },
-            onError: () => {
-                const modal = Modal.error({
-                    title: "NFT Listing",
-                    content: "Something went wrong",
-                });
-                setTimeout(() => {
-                    modal.destroy();
-                }, 2000);
             }
-        })
+            call();
+        }
+        callback(walletAddress);
+        
     }
-    // const showInfoModal = () => {
-    //     const modal = Modal.success({
-    //         title: "NFT Listing",
-    //         content: "Your NFT is listed successfully",
-    //     });
-    //     setTimeout(() => {
-    //         modal.destroy();
-    //     }, 2000);
-    // }
+
+    const sellOnAuction = async () => {
+
+    }
+
+    const onSwitchChange = (checked) => {
+        console.log(`switch to ${checked}`);
+        setFixedPrice(checked)
+    }
+
     const nftModal = () => {
         return <Flex>
             <Modal
@@ -160,8 +180,20 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
 
                 </Flex>
 
-                <Input
+                <Flex justify={"space-between"} style={{
+                    marginBottom: "15px",
+                }}>
+                    <h3
+                        style={{
+                            fontWeight: "800",
+                            fontSize: "16px",
+                        }}
+                    >{isFixedPrice ? "Fix Price" : "On Auction"}</h3>
+                    <Switch checked={isFixedPrice} onChange={onSwitchChange} />
 
+                </Flex>
+
+                {isFixedPrice && <Input
                     step={0.1}
                     min={0.0}
                     allowClear={true}
@@ -176,7 +208,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                     enterKeyHint="Enter Price in Eth"
                     onChange={(e) => setEthPrice(e.target.value)}
                 >
-                </Input>
+                </Input>}
 
                 <Collapse
                     style={{
@@ -211,7 +243,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
         </Flex>
     }
 
-    const sellModal = () => {
+    const transferModal = () => {
         return <Modal
             centered={true}
             keyboard={true}
@@ -291,38 +323,27 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                         </Flex>
                         <p> {metadata.description}</p>
                     </div>
-                    {onMarketplace &&
-                        <Flex className="card__info-row">
-                            <Flex>
-                                <EthereumIcom color={colors.cyan} />
-                                <span className="card__info-box-left">eth</span>
-                            </Flex>
 
-                            {/* <Flex>
+
+                    {/* <Flex>
                     <ClockIcon />
                     <span className="card__info-box-right">3 days left</span>
-                </Flex> */}
-                        </Flex>
-                    }
-                    <div className="card__footer">
-                        {/* <Flex gap="5px" justify="flex-start">
-                            <p>
-                                Minted By: <span>{turncate(minter)}</span>
-                            </p>
-                        </Flex> */}
-                        <Flex gap="5px" justify="flex-start">
-                            <p>
-                                Owned By: <span>{turncate(owner)}</span>
-                            </p>
-                        </Flex>
-                    </div>
+                </Flex> */
+                        <div className="card__footer">
 
+                            <Flex gap="5px" justify="flex-start">
+                                <p>
+                                    Owned By: <span>{turncate(owner)}</span>
+                                </p>
+                            </Flex>
+                        </div>
+                    }
                 </StyledCard>
 
 
             </Card>
             {visibility && nftModal()}
-            {secondVisibility && sellModal()}
+            {secondVisibility && transferModal()}
 
         </>
 

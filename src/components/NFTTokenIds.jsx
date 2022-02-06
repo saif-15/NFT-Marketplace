@@ -8,7 +8,7 @@ import {
   useMoralisQuery,
   useNewMoralisObject,
 } from "react-moralis";
-import { Card, Spin, Space } from "antd";
+import { Card, Spin, Space, Tabs } from "antd";
 import { useNFTTokenIds } from "hooks/useNFTTokenIds";
 import {
   FileSearchOutlined,
@@ -19,6 +19,8 @@ import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvide
 import { getExplorer } from "helpers/networks";
 import { useWeb3ExecuteFunction } from "react-moralis";
 const { Meta } = Card;
+const { TabPane } = Tabs;
+
 
 const styles = {
   NFTs: {
@@ -59,12 +61,7 @@ const styles = {
 
 function NFTTokenIds() {
 
-  const contractProcessor = useWeb3ExecuteFunction();
-  const { Moralis } = useMoralis();
-  const marketNFTs = useMoralisQuery("MarketplaceListing");
-
-
-
+  const marketNFTs  = useMoralisQuery("MarketplaceListing",q=>q,[],{live:true});
 
   const styles = {
     parent: {
@@ -77,39 +74,50 @@ function NFTTokenIds() {
       margin: "5px",
       height: "100px",
     },
+    tabs: {
+      color: "#21BF96"
+    }
   }
-
-
-
-
-
-
   return (
     <>
-      <div style={styles.parent}>
-        {marketNFTs.data.length != 0 ?
-          marketNFTs
-            .data.map((item, index) =>
-              <MarketItem
-                uri={item.attributes.uri}
-                minter={item.attributes.minter}
-                address={item.attributes.nftContract}
-                tokenId={item.attributes.tokenId}
-                owner={item.attributes.seller}
-                onMarketplace={true}
-                createdAt={String(item.attributes.createdAt)}
-                price={item.attributes.price}
-                itemId={item.attributes.itemId}
-              />
-            )
-          : <Space size="middle" >
-            <Spin size="large" />
-          </Space>
-        }
-      </div>
+      <Tabs defaultActiveKey="1" centered size={"large"} >
+        <TabPane tab="Fix Price Token" key="1" >
+          <div style={styles.parent}>
+            {marketNFTs.data.length != 0 ?
+              marketNFTs
+                .data.map((item, index) =>
+                  <MarketItem
+                    uri={item.attributes.uri}
+                    minter={item.attributes.minter}
+                    address={item.attributes.nftContract}
+                    tokenId={item.attributes.tokenId}
+                    owner={item.attributes.seller}
+                    onMarketplace={true}
+                    createdAt={String(item.attributes.createdAt)}
+                    price={item.attributes.price}
+                    itemId={item.attributes.itemId}
+
+                  />
+                )
+              : <Space size="middle" style={{
+                height: "100vh",
+                width: "50%"
+              }} >
+                <Spin size="large" />
+              </Space>
+
+            }
+          </div>
+        </TabPane>
+        <TabPane tab="On Auction" key="2">
+          Content of Tab Pane 2
+        </TabPane>
+
+      </Tabs>
+
+
     </>
   );
 
 }
-
 export default NFTTokenIds;

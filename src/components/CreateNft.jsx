@@ -31,6 +31,16 @@ function CreateNft() {
 
         await contractProcessor.fetch({
             params: options,
+            onError: () => {
+                const modal = Modal.success({
+                    title: "NFT Minting",
+                    content: "Your NFT not minted successfully",
+                });
+                setTimeout(() => {
+                    modal.destroy();
+                }, 2000);
+                setLoading(false);
+            },
             onSuccess: () => {
                 const modal = Modal.success({
                     title: "NFT Minting",
@@ -39,6 +49,7 @@ function CreateNft() {
                 setTimeout(() => {
                     modal.destroy();
                 }, 2000);
+                setLoading(false);
             }
         })
     }
@@ -103,7 +114,8 @@ function CreateNft() {
         },
         heading: {
             fontSize: "35px",
-            marginTop:"40px"
+            marginTop: "40px",
+            fontWeight:"700"
 
         },
         paras: {
@@ -117,7 +129,7 @@ function CreateNft() {
     return (
         isAuthenticated ?
             <div style={styles.container}>
-                <h2 style={styles.heading}>Create New Item</h2>
+                <h2 style={styles.heading}>Create New Token</h2>
 
                 <div style={{
                     marginTop: "20px 10px"
@@ -136,6 +148,8 @@ function CreateNft() {
 
                 <Input
                     style={{
+                        fontWeight:"600",
+                        fontSize: "16px",
                         margin: "10px",
                         padding: "10px 10px",
                         borderRadius: "5px",
@@ -162,7 +176,9 @@ function CreateNft() {
                         margin: "10px",
                         padding: "10px 10px",
                         borderRadius: "5px",
-                        color: "#000000"
+                        color: "#000000",
+                        fontWeight:"600",
+                        fontSize: "16px",
 
                     }}
                     allowClear={true}
@@ -184,7 +200,9 @@ function CreateNft() {
                         margin: "10px",
                         padding: "10px 10px",
                         borderRadius: "5px",
-                        color: "#000000"
+                        color: "#000000",
+                        fontWeight:"600",
+                        fontSize: "16px",
 
                     }}
                     allowClear={true}
@@ -229,7 +247,7 @@ function CreateNft() {
                 <Button
                     style={{
                         marginTop: "40px",
-                        backgroundColor: "#1AA7CE",
+                        backgroundColor: "#21BF96",
                         borderRadius: "5px",
                         color: "#FFFFFF",
                         fontSize: "15px",
@@ -243,12 +261,10 @@ function CreateNft() {
                         console.log('clicked')
                         uploadNFT();
                         setLoading(true)
-                        setTimeout(() => {
-                            setLoading(false)
-                        }, 2000)
+
 
                     }}
-                >Mint NFT</Button>
+                >Mint Token</Button>
             </div > :
             <h2 style={styles.heading}>Please Login to Mint NFTs</h2>
 

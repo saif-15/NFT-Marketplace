@@ -32,6 +32,8 @@ contract NFTMarketplace is ReentrancyGuard {
         address payable owner;
         uint256 price;
         bool sold;
+        bool isFixPrice;
+        bool onAuction;
     }
 
     mapping(uint256 => MarketItem) private MarketItems;
@@ -44,7 +46,9 @@ contract NFTMarketplace is ReentrancyGuard {
         address seller,
         address owner,
         uint256 price,
-        bool firstTime
+        bool firstTime,
+        bool isFixPrice,
+        bool onAuction
     );
 
     event ItemUpdated(
@@ -103,6 +107,60 @@ contract NFTMarketplace is ReentrancyGuard {
         return MarketItems[id].minter;
     }
 
+    event transferNFT(address from, address to, uint256 tokenId);
+
+    function transferToken(
+        address from,
+        address to,
+        address nftContract,
+        uint256 itemId
+    ) public nonReentrant onlyItemSeller(itemId) {
+        uint256 tokenId = MarketItems[itemId].tokenId;
+      
+        IERC721(nftContract).transferFrom(from, to, tokenId);
+
+        emit transferNFT(from, to, tokenId);
+    }
+
+
+   function createMarketAuctionItem(
+       address nftContract,
+       uint256 tokenId
+       )public nonReentrant{
+        require(msg.value == listingFee, "Listing fee required");
+          _itemsIds.increment();
+           uint256 itemId = _itemsIds.current();
+
+           MarketItems[itemId] = MarketItem(
+            itemId,
+            nftContract,
+            tokenId,
+            payable(msg.sender),
+            payable(msg.sender),
+            payable(address(0)),
+            0,
+            false,
+            false,
+            true
+        );
+         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+
+         emit MarketItemCreated(
+            itemId,
+            nftContract,
+            tokenId,
+            msg.sender,
+            msg.sender,
+            address(0),
+            0,
+            true,
+            false,
+            true
+
+        );
+
+    }
+
     function createMarketItem(
         address nftContract,
         uint256 tokenId,
@@ -123,6 +181,8 @@ contract NFTMarketplace is ReentrancyGuard {
             payable(msg.sender),
             payable(address(0)),
             price,
+            false,
+            true,
             false
         );
 
@@ -136,7 +196,9 @@ contract NFTMarketplace is ReentrancyGuard {
             msg.sender,
             address(0),
             price,
-            true
+            true,
+            true,
+            false
         );
     }
 

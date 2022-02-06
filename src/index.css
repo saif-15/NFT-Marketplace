@@ -63,3 +63,17 @@ select {
 .ant-spin-dot-item {
   background-color: #21BF96;
 }
+.ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: #21BF96;
+  font-weight: 700;
+}
+
+.ant-tabs-tab.ant-tabs-tab  {
+  color: #21BF96;
+  font-weight: 500;
+}
+.ant-tabs-ink-bar {
+  position: absolute;
+  background: #21BF96;
+  pointer-events: none;
+}
