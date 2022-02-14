@@ -4,6 +4,7 @@ import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvide
 import { Table, Spin, Space } from "antd";
 import { PolygonCurrency } from "./Chains/Logos";
 import moment from "moment";
+import Account from "./Account";
 
 const styles = {
   table: {
@@ -32,14 +33,14 @@ function NFTMarketTransactions() {
   const data = transactions.
     data.map((item, index) => ({
       key: index,
-      transaction_hash: turncate(item.attributes.hash),
-      block_number: turncate(item.attributes.block_number),
-      date: moment(item.attributes.createdAt).format("DD-MM-YY hh:mm A"),
-      status: item.attributes.confirmed ? "Completed" : "In Progress",
-      from_address: turncate(item.attributes.from_address),
-      to_address: turncate(item.attributes.to_address),
-      price: Moralis.Units.FromWei(item.attributes.value),
-      gas_price: Moralis.Units.FromWei(item.attributes.gas)
+      transaction_hash:  <a href={`https://ropsten.etherscan.io/tx/${item.attributes.hash}`} target={"_blank"}>{turncate(item.attributes.hash ?? "NA")}</a>,
+      block_number: turncate(item.attributes.block_number ?? "NA"),
+      date: moment(item.attributes.createdAt ?? "NA").format("DD-MM-YY hh:mm A"),
+      status: item.attributes.confirmed ?? "NA" ? "Completed" : "In Progress",
+      from_address: <a href={`https://ropsten.etherscan.io//address/${item.attributes.from_address}`} target={"_blank"}>{turncate(item.attributes.from_address ?? "NA")}</a>,
+      to_address: <a href={`https://ropsten.etherscan.io//address/${item.attributes.to_address}`} target={"_blank"}>{turncate(item.attributes.to_address ?? "NA")}</a>,
+      price: Moralis.Units.FromWei(item.attributes.value ?? "NA"),
+      gas_price: Moralis.Units.FromWei(item.attributes.gas ?? "NA")
     }));
 
   return (
@@ -47,7 +48,7 @@ function NFTMarketTransactions() {
       <div>
         {transactions.data.length != 0 ?
           <div style={styles.table}>
-            <Table columns={columns} dataSource={data} />
+            <Table columns={columns} dataSource={data} pagination={false} />
           </div>
           : <Space size="middle" style={{
             height: "100vh",
@@ -66,7 +67,7 @@ const columns = [
     title: "Transaction Hash",
     dataIndex: "transaction_hash",
     key: "transaction_hash",
-   filterSearch: true
+    filterSearch: true
   },
   {
     title: "Block Number",

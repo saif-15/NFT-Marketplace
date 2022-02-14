@@ -17,7 +17,7 @@ import { FileSearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 
 import { Button, Card, Tooltip } from "antd";
 
-function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transactionHash, createdAt, isFirstTime, itemId, callback }) {
+function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transactionHash, createdAt, isFirstTime, itemId, callback, query }) {
     const { Panel } = Collapse;
 
     const { Moralis } = useMoralis();
@@ -114,16 +114,53 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
             call();
         }
         callback(walletAddress);
-        
-    }
-
-    const sellOnAuction = async () => {
 
     }
+
+    const transferToken = async () => {
+        let option = {
+            contractAddress: contractAddresses.marketplaceContract,
+            functionName: abis.transferToken.functionName,
+            abi: abis.transferToken.abi,
+            params: {
+                ownerAddress: walletAddress,
+                toAddress: ethAddress,
+                nftContract: address,
+                tokenId: tokenId,
+            },
+        };
+        setSecondVisibility(false);
+
+        await contractProcessor.fetch({
+            params: option,
+            onSuccess: () => {
+                const modal = Modal.success({
+                    title: "NFT Transfer",
+                    content: `Your NFT is transfer successfully to ${ethAddress}`,
+                },
+                );
+                setTimeout(() => {
+                    setSecondVisibility(false);
+                    modal.destroy();
+                }, 2000);
+            },
+            onError: () => {
+                const modal = Modal.error({
+                    title: "NFT Transfer",
+                    content: `Transfer Failed`,
+                });
+                setTimeout(() => {
+                    modal.destroy();
+                }, 2000);
+            }
+        })
+    }
+
 
     const onSwitchChange = (checked) => {
         console.log(`switch to ${checked}`);
         setFixedPrice(checked)
+
     }
 
     const nftModal = () => {
@@ -148,6 +185,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                     >Transfer Token</Button>
                     ,
                     <Button
+                        disabled={!isFixedPrice}
                         type={"primary"}
                         color={colors.White}
                         onClick={(e) => {
@@ -158,6 +196,10 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                 ]}
                 confirmLoading={true}
             >
+                {!isFixedPrice && <Alert message="Auction isnt Available yet" type="error" style={{
+                    margin: "10px"
+                }} />}
+
 
                 <Flex justify={"center"}>
                     <Badge.Ribbon
@@ -218,13 +260,15 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                     }}
                 >
                     <Panel header="Token Owner" key="1">
-                        <p >{owner}</p>
+                        <a href={`https://ropsten.etherscan.io/address/${owner}`} target="_blank">{owner}</a>
                     </Panel>
                     <Panel header="Token Minter" key="2">
-                        <p>{minter}</p>
+                        <a href={`https://ropsten.etherscan.io/address/${minter}`} target="_blank">{minter}</a>
+
                     </Panel>
                     <Panel header="Token Address" key="3">
-                        <p>{address}</p>
+                        <a href={`https://ropsten.etherscan.io/token/${address}`} target="_blank">{address}</a>
+
                     </Panel>
                     <Panel header="Token ID" key="4">
                         <p>{tokenId}</p>
@@ -232,10 +276,17 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                     <Panel header="Token Type" key="5">
                         <p>{"ERC721"}</p>
                     </Panel>
-                    <Panel header="Token Transaction Hash" key="6">
-                        <p>{transactionHash}</p>
+                    <Panel header="Token Name" key="6">
+                        <p>{"FYPToken"}</p>
                     </Panel>
-                    <Panel header="Token Minted At" key="7">
+                    <Panel header="Token Symbol" key="7">
+                        <p>{"FYP"}</p>
+                    </Panel>
+                    <Panel header="Token Transaction Hash" key="8">
+                        <a href={`https://ropsten.etherscan.io/tx/${transactionHash}`} target="_blank">{transactionHash}</a>
+
+                    </Panel>
+                    <Panel header="Token Minted At" key="9">
                         <p>{moment(createdAt).format("DD-MM-YYYY hh:mm A")}</p>
                     </Panel>
                 </Collapse>
@@ -245,17 +296,24 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
 
     const transferModal = () => {
         return <Modal
+            style={{
+                "font-weight": "bold",
+            }}
             centered={true}
             keyboard={true}
             maskClosable={true}
             title={`${onMarketplace ? "" : "Transfer Token :" + tokenId}`}
             visible={secondVisibility}
-            onCancel={() => {
+            onCancel={(e) => {
+                console.log(walletAddress);
                 console.log(ethAddress);
+                console.log(contractAddresses.nftContract);
+                console.log(tokenId);
                 setSecondVisibility(false);
 
             }}
-            onOk={() => setSecondVisibility(false)}
+            onOk={(e) => transferToken()
+            }
         >
 
             <Input
@@ -282,7 +340,10 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                     <Tooltip title="View On Blockexplorer">
                         <FileSearchOutlined
                             onClick={() =>
-                                console.log()
+                                window.open(
+                                    `https://ropsten.etherscan.io/tx/${transactionHash}`,
+                                    "_blank"
+                                )
                             }
                         />
                     </Tooltip>,
@@ -304,6 +365,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
 
                 hoverable
             >
+
                 <StyledCard
                     image={metadata.image}
                 >
@@ -314,6 +376,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                             </div>
                         </div>
                     </div>
+
                     <div className="card__text-cont">
                         <Flex>
 
@@ -329,23 +392,27 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                     <ClockIcon />
                     <span className="card__info-box-right">3 days left</span>
                 </Flex> */
-                        <div className="card__footer">
+                        // <div className="card__footer">
 
-                            <Flex gap="5px" justify="flex-start">
-                                <p>
-                                    Owned By: <span>{turncate(owner)}</span>
-                                </p>
-                            </Flex>
-                        </div>
+                        //     <Flex gap="5px" justify="flex-start">
+                        //         <p>
+                        //             Owned By: <span>{turncate(owner)}</span>
+                        //         </p>
+                        //     </Flex>
+                        // </div>
                     }
                 </StyledCard>
 
 
+
             </Card>
+
             {visibility && nftModal()}
             {secondVisibility && transferModal()}
 
+
         </>
+
 
     );
 }

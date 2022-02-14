@@ -28,6 +28,7 @@ export const fontWidth = {
   light: 300,
   regular: 400,
   semiBold: 600,
+  bold:800,
 };
 
 export const borderRadius = {

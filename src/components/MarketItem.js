@@ -10,16 +10,20 @@ import contractAddresses from "./contracts";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { colors, Flex } from "assets/style/variables";
 import { FileSearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
+
 
 import { Button, Card, Tooltip } from "antd";
 
-function MarketItem({ uri, minter, address, tokenId, owner, onMarketplace, createdAt, price, itemId, }) {
+function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplace, createdAt, price, itemId,query }) {
     const { Panel } = Collapse;
 
     const { Moralis } = useMoralis();
     const contractProcessor = useWeb3ExecuteFunction();
     const [metadata, setMetadata] = useState({});
     const [visibility, setVisibility] = useState(false);
+    const { walletAddress } = useMoralisDapp();
+
 
 
     const parseJson = async (url) => {
@@ -136,13 +140,14 @@ function MarketItem({ uri, minter, address, tokenId, owner, onMarketplace, creat
                     }}
                 >
                     <Panel header="Token Owner" key="1">
-                        <p >{owner}</p>
+                    <a href={`https://ropsten.etherscan.io/address/${owner}`} target="_blank">{owner}</a>
+
                     </Panel>
                     <Panel header="Token Minter" key="2">
-                        <p>{minter}</p>
+                    <a href={`https://ropsten.etherscan.io/address/${minter}`} target="_blank">{minter}</a>
                     </Panel>
                     <Panel header="Token Address" key="3">
-                        <p>{address}</p>
+                    <a href={`https://ropsten.etherscan.io/token/${address}`} target="_blank">{address}</a>
                     </Panel>
                     <Panel header="Token ID" key="4">
                         <p>{tokenId}</p>
@@ -163,6 +168,7 @@ function MarketItem({ uri, minter, address, tokenId, owner, onMarketplace, creat
 
 
     return (
+        walletAddress !== seller &&
         <>
             <Card
                 onClick={(e) => setVisibility(true)}

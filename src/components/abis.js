@@ -1,4 +1,26 @@
 const abis = {
+    mintItem: {
+        functionName: "mintItem",
+        abi: [{
+            "inputs": [
+                {
+                    "internalType": "string",
+                    "name": "uri",
+                    "type": "string"
+                }
+            ],
+            "name": "mintItem",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }]
+    },
     createMarketItem: {
         functionName: "createMarketItem",
         abi: [{
@@ -22,29 +44,6 @@ const abis = {
             "name": "createMarketItem",
             "outputs": [],
             "stateMutability": "payable",
-            "type": "function"
-        }]
-    },
-
-    mintItem: {
-        functionName: "mintItem",
-        abi: [{
-            "inputs": [
-                {
-                    "internalType": "string",
-                    "name": "uri",
-                    "type": "string"
-                }
-            ],
-            "name": "mintItem",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "nonpayable",
             "type": "function"
         }]
     },
@@ -92,6 +91,37 @@ const abis = {
             "name": "createMarketSale",
             "outputs": [],
             "stateMutability": "payable",
+            "type": "function"
+        }]
+    },
+    transferToken: {
+        functionName: "transferNFT",
+        abi: [{
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "ownerAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "toAddress",
+                    "type": "address"
+                },
+                {
+                    "internalType": "address",
+                    "name": "nftContract",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "tokenId",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transferNFT",
+            "outputs": [],
+            "stateMutability": "nonpayable",
             "type": "function"
         }]
     }

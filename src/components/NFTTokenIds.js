@@ -59,15 +59,22 @@ const styles = {
   },
 };
 
-function NFTTokenIds() {
+function NFTTokenIds({ query, setHint }) {
 
-  const marketNFTs  = useMoralisQuery("MarketplaceListing",q=>q,[],{live:true});
 
+  const marketNFTs = useMoralisQuery("MarketplaceListing", q => q, [], { live: true });
+  setHint("Explore Market")
   const styles = {
     parent: {
       display: "flex",
       "flex-wrap": "wrap",
       "justify-content": "center"
+    },
+    heading: {
+      fontSize: "35px",
+      marginTop: "40px",
+      fontWeight: "700"
+
     },
     child: {
       flex: "1 0 21%",
@@ -89,6 +96,7 @@ function NFTTokenIds() {
                   <MarketItem
                     uri={item.attributes.uri}
                     minter={item.attributes.minter}
+                    seller={item.attributes.seller}
                     address={item.attributes.nftContract}
                     tokenId={item.attributes.tokenId}
                     owner={item.attributes.seller}
@@ -96,6 +104,7 @@ function NFTTokenIds() {
                     createdAt={String(item.attributes.createdAt)}
                     price={item.attributes.price}
                     itemId={item.attributes.itemId}
+                    query={query}
 
                   />
                 )
@@ -110,7 +119,9 @@ function NFTTokenIds() {
           </div>
         </TabPane>
         <TabPane tab="On Auction" key="2">
-          Content of Tab Pane 2
+          <h2 style={styles.heading}>
+            Auction Coming Soon
+          </h2>
         </TabPane>
 
       </Tabs>

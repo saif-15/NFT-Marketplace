@@ -30,6 +30,7 @@ const styles = {
     marginTop: "70px",
     padding: "10px",
   },
+
   header: {
     position: "fixed",
     zIndex: 1,
@@ -48,6 +49,8 @@ const styles = {
     gap: "20px",
     alignItems: "center",
     fontSize: "15px",
+    fontFamily: "Montserrat,Roboto, sans-serif",
+
     fontWeight: "600",
   },
 };
@@ -57,7 +60,8 @@ const App = ({ isServerInfo }) => {
 
 
 
-  const [inputValue, setInputValue] = useState("explore");
+  const [query, setQuery] = useState("");
+  const [placeholder, setPlaceHolder] = useState("Search Marketplace")
 
   useEffect(() => {
     if (isAuthenticated && !isWeb3Enabled && !isWeb3EnableLoading) enableWeb3();
@@ -69,22 +73,23 @@ const App = ({ isServerInfo }) => {
       <Router>
         <Header style={styles.header}>
           <Logo />
-          <SearchCollections />
+          {/* <SearchCollections placeholder={placeholder} setQuery={setQuery} /> */}
           <Menu
             theme="light"
             mode="horizontal"
             style={{
               display: "flex",
-              fontSize: "14px",
-              fontWeight: "600",
-              marginLeft: "35px",
-              width: "100%",
+              fontSize: "15px",
+              fontWeight: "800",
+              marginLeft: "0px",
+              width: "70%",
+              justifyContent: "center"
 
             }}
             defaultSelectedKeys={["marketplace"]}
-            color={"#00F0FF"}
+            color={"#0000FF"}
           >
-            <Menu.Item key="marketplace" onClick={() => setInputValue("explore")} >
+            <Menu.Item key="marketplace"  >
               <NavLink to="/marketplace">Explore Market</NavLink>
             </Menu.Item>
             <Menu.Item key="collection">
@@ -106,14 +111,14 @@ const App = ({ isServerInfo }) => {
         <div style={styles.content}>
           <Switch>
             <Route path="/collection">
-              <NFTBalance />
+              <NFTBalance query={query} setHint={setPlaceHolder} />
             </Route>
             <Route path="/create">
               <CreateNft />
 
             </Route>
             <Route path="/marketplace">
-              <NFTTokenIds inputValue={inputValue} setInputValue={setInputValue} />
+              <NFTTokenIds query={query} setHint={setPlaceHolder} />
             </Route>
             <Route path="/transactions">
               <NFTMarketTransactions />
@@ -129,7 +134,8 @@ const App = ({ isServerInfo }) => {
 export const Logo = () => (
   <div style={{
     display: "flex",
-    marginTop: "20px"
+    marginTop: "20px",
+    fontFamily: 'Kaushan Script',
   }}>
     {
       <svg

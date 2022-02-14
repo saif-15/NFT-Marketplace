@@ -37,7 +37,7 @@ const styles = {
   },
 };
 
-function NFTBalance() {
+function NFTBalance({ query, setHint }) {
   const { walletAddress } = useMoralisDapp();
   const { Moralis, isAuthenticated, } = useMoralis();
   const [loading, setLoading] = useState(false);
@@ -57,6 +57,7 @@ function NFTBalance() {
     }, 5000);
   }
 
+  setHint("Search Collection");
 
   useEffect(() => {
 
@@ -84,6 +85,7 @@ function NFTBalance() {
                 isFirstTime={item.attributes.firstTime}
                 itemId={item.attributes.itemId ?? -1}
                 callback={getUserNFTs}
+                query={query}
               />
             })
             : <h2>You have 0 NFTs Owned or Minted</h2>

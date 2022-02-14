@@ -68,6 +68,15 @@ select {
   font-weight: 700;
 }
 
+a{
+  color: #21BF96;
+  font-weight: 800;
+}
+a:hover{
+  color: #21BF96;
+
+}
+
 .ant-tabs-tab.ant-tabs-tab  {
   color: #21BF96;
   font-weight: 500;

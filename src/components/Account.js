@@ -24,6 +24,7 @@ const styles = {
     // color: "#21BF96",
     color: "rgb(255, 255, 244)",
   },
+  
 };
 
 function Account() {
@@ -46,7 +47,7 @@ function Account() {
     <>
       <div style={styles.account} onClick={() => setIsModalVisible(true)}>
         <p style={{ marginRight: "5px", ...styles.text }}>
-          {getEllipsisTxt(walletAddress, 6)}
+          {getEllipsisTxt(walletAddress, 10)}
         </p>
         <Blockie currentWallet scale={3} />
       </div>

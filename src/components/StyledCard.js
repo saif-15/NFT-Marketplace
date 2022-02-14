@@ -10,7 +10,7 @@ import {
 
 export const Card = styled.section`
   width: 300px;
-  max-width: 260px;
+  max-width: 270px;
   height:400px;
   cursor:pointer;
   background-color: ${colors.White};
@@ -61,7 +61,7 @@ export const Card = styled.section`
     
     h3 {
       padding:10px 15px;
-      font-weight: ${fontWidth.semiBold};
+      font-weight: ${fontWidth.bold};
       color: ${colors.black};
       font-size: ${fontSize.large};
       cursor: pointer;
@@ -72,7 +72,7 @@ export const Card = styled.section`
     }
     span{
       padding:10px 15px;
-      font-weight: ${fontWidth.semiBold};
+      font-weight: ${fontWidth.bold};
       color: ${colors.hoverColor};
       font-size: ${fontSize.medium};
       cursor: pointer;
@@ -101,7 +101,7 @@ export const Card = styled.section`
   }
   .card__footer {
     padding:10px ;
-    border-top: 2px solid ${colors.darkBlueLine};
+    // border-top: 10px solid ${colors.darkBlueLine};
     
     margin: 20px 0 0 0;
     .avatar {
@@ -118,7 +118,7 @@ export const Card = styled.section`
       color: ${colors.darkBlueLine};
       font-weight:${fontWidth.semiBold};
      
-      overflow: hidden;
+       overflow: hidden;
       span {
         color: ${colors.darkBlueCardBG};
         font-weight:${fontWidth.regular};

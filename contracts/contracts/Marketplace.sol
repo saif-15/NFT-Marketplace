@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./NFT.sol";
 
-contract NFTMarketplace is ReentrancyGuard {
+contract Marketplace is ReentrancyGuard {
     using Counters for Counters.Counter;
     Counters.Counter private _itemsIds;
     Counters.Counter private _itemsSold;
@@ -32,8 +32,6 @@ contract NFTMarketplace is ReentrancyGuard {
         address payable owner;
         uint256 price;
         bool sold;
-        bool isFixPrice;
-        bool onAuction;
     }
 
     mapping(uint256 => MarketItem) private MarketItems;
@@ -46,9 +44,7 @@ contract NFTMarketplace is ReentrancyGuard {
         address seller,
         address owner,
         uint256 price,
-        bool firstTime,
-        bool isFixPrice,
-        bool onAuction
+        bool firstTime
     );
 
     event ItemUpdated(
@@ -56,6 +52,19 @@ contract NFTMarketplace is ReentrancyGuard {
         uint256 indexed oldPrice,
         uint256 indexed newPrice
     );
+
+    event TransferNFT(address ownerAddress, address toAddress, uint256 tokenId);
+
+    function transferNFT(
+        address ownerAddress,
+        address toAddress,
+        address nftContract,
+        uint256 tokenId
+    ) public nonReentrant {
+        NFT tokenContract = NFT(nftContract);
+        tokenContract.transferToken(ownerAddress, toAddress, tokenId);
+        emit TransferNFT(ownerAddress, toAddress, tokenId);
+    }
 
     event MarketItemDeleted(uint256 itemId);
 
@@ -84,8 +93,7 @@ contract NFTMarketplace is ReentrancyGuard {
 
     modifier onlyItemSeller(uint256 id) {
         require(
-            MarketItems[id].owner == address(0) &&
-                MarketItems[id].seller == msg.sender,
+            MarketItems[id].owner == msg.sender,
             "Only the Item can do this operation"
         );
         _;
@@ -107,60 +115,6 @@ contract NFTMarketplace is ReentrancyGuard {
         return MarketItems[id].minter;
     }
 
-    event transferNFT(address from, address to, uint256 tokenId);
-
-    function transferToken(
-        address from,
-        address to,
-        address nftContract,
-        uint256 itemId
-    ) public nonReentrant onlyItemSeller(itemId) {
-        uint256 tokenId = MarketItems[itemId].tokenId;
-      
-        IERC721(nftContract).transferFrom(from, to, tokenId);
-
-        emit transferNFT(from, to, tokenId);
-    }
-
-
-   function createMarketAuctionItem(
-       address nftContract,
-       uint256 tokenId
-       )public nonReentrant{
-        require(msg.value == listingFee, "Listing fee required");
-          _itemsIds.increment();
-           uint256 itemId = _itemsIds.current();
-
-           MarketItems[itemId] = MarketItem(
-            itemId,
-            nftContract,
-            tokenId,
-            payable(msg.sender),
-            payable(msg.sender),
-            payable(address(0)),
-            0,
-            false,
-            false,
-            true
-        );
-         IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
-
-         emit MarketItemCreated(
-            itemId,
-            nftContract,
-            tokenId,
-            msg.sender,
-            msg.sender,
-            address(0),
-            0,
-            true,
-            false,
-            true
-
-        );
-
-    }
-
     function createMarketItem(
         address nftContract,
         uint256 tokenId,
@@ -179,14 +133,13 @@ contract NFTMarketplace is ReentrancyGuard {
             tokenId,
             payable(msg.sender),
             payable(msg.sender),
-            payable(address(0)),
+            payable(address(this)),
             price,
-            false,
-            true,
             false
         );
 
-        IERC721(nftContract).transferFrom(msg.sender, address(this), tokenId);
+        NFT tokenContract = NFT(nftContract);
+        tokenContract.transferToken(msg.sender, address(this), tokenId);
 
         emit MarketItemCreated(
             itemId,
@@ -194,11 +147,9 @@ contract NFTMarketplace is ReentrancyGuard {
             tokenId,
             msg.sender,
             msg.sender,
-            address(0),
+            address(this),
             price,
-            true,
-            true,
-            false
+            true
         );
     }
 
@@ -232,7 +183,8 @@ contract NFTMarketplace is ReentrancyGuard {
         // Sellers  Remainning 90%  calculation
         MarketItems[itemId].seller.transfer(msg.value - minterRoyality);
 
-        IERC721(nftContract).transferFrom(address(this), msg.sender, tokenId);
+        NFT tokenContract = NFT(nftContract);
+        tokenContract.transferToken(address(this), msg.sender, tokenId);
         MarketItems[itemId].owner = payable(msg.sender);
         MarketItems[itemId].sold = true;
         _itemsSold.increment();
@@ -258,7 +210,7 @@ contract NFTMarketplace is ReentrancyGuard {
         address nftContract,
         uint256 itemId,
         uint256 newPrice
-    ) public payable nonReentrant onlyItemOwner(itemId) {
+    ) public payable nonReentrant {
         uint256 tokenId = MarketItems[itemId].tokenId;
         require(newPrice > 0, "Price must be at least 1 wei");
         require(
@@ -267,7 +219,6 @@ contract NFTMarketplace is ReentrancyGuard {
         );
 
         NFT tokenContract = NFT(nftContract);
-
         tokenContract.transferToken(msg.sender, address(this), tokenId);
 
         address payable oldOwner = MarketItems[itemId].owner;
