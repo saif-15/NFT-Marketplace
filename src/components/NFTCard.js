@@ -2,14 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { EthereumIcom, ClockIcon, ViewIcon } from "assets/svg";
 import { BoxShadow, Card as StyledCard } from "./StyledCard";
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
-import image from "assets/img/image-avatar.png";
 import { Image, Modal, Alert, Badge, Input, Collapse, Switch } from "antd";
 import abis from "./abis";
 import { Typography } from 'antd';
 import moment from "moment";
-
-
-
 import contractAddresses from "./contracts";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { colors, Flex } from "assets/style/variables";
@@ -32,8 +28,6 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
     const [ethPrice, setEthPrice] = useState("");
     const [isFixedPrice, setFixedPrice] = useState(true);
     const { Title, Paragraph } = Typography;
-
-
 
 
 
@@ -154,6 +148,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                 }, 2000);
             }
         })
+        callback(walletAddress);
     }
 
 

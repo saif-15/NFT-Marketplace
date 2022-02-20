@@ -15,7 +15,7 @@ import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvide
 
 import { Button, Card, Tooltip } from "antd";
 
-function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplace, createdAt, price, itemId,query }) {
+function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplace, createdAt, price, itemId, query }) {
     const { Panel } = Collapse;
 
     const { Moralis } = useMoralis();
@@ -140,14 +140,14 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
                     }}
                 >
                     <Panel header="Token Owner" key="1">
-                    <a href={`https://ropsten.etherscan.io/address/${owner}`} target="_blank">{owner}</a>
+                        <a href={`https://ropsten.etherscan.io/address/${owner}`} target="_blank">{owner}</a>
 
                     </Panel>
                     <Panel header="Token Minter" key="2">
-                    <a href={`https://ropsten.etherscan.io/address/${minter}`} target="_blank">{minter}</a>
+                        <a href={`https://ropsten.etherscan.io/address/${minter}`} target="_blank">{minter}</a>
                     </Panel>
                     <Panel header="Token Address" key="3">
-                    <a href={`https://ropsten.etherscan.io/token/${address}`} target="_blank">{address}</a>
+                        <a href={`https://ropsten.etherscan.io/token/${address}`} target="_blank">{address}</a>
                     </Panel>
                     <Panel header="Token ID" key="4">
                         <p>{tokenId}</p>
