@@ -23,9 +23,6 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
     const [metadata, setMetadata] = useState({});
     const [visibility, setVisibility] = useState(false);
     const { walletAddress } = useMoralisDapp();
-
-
-
     const parseJson = async (url) => {
         const response = await fetch(url);
         const data = await response.json();
@@ -41,7 +38,8 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
 
     useEffect(() => {
         parseJson(uri)
-    }, [])
+
+    }, [query])
 
 
     const purchaseItem = async () => {
@@ -171,6 +169,7 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
         walletAddress !== seller &&
         <>
             <Card
+
                 onClick={(e) => setVisibility(true)}
                 actions={[
                     <Tooltip title="Buy Now">
@@ -218,7 +217,6 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
 
                         </Flex>
                     }
-
 
                 </StyledCard>
             </Card>

@@ -93,20 +93,21 @@ function NFTTokenIds({ query, setHint }) {
             {marketNFTs.data.length != 0 ?
               marketNFTs
                 .data.map((item, index) =>
-                  <MarketItem
-                    uri={item.attributes.uri}
-                    minter={item.attributes.minter}
-                    seller={item.attributes.seller}
-                    address={item.attributes.nftContract}
-                    tokenId={item.attributes.tokenId}
-                    owner={item.attributes.seller}
-                    onMarketplace={true}
-                    createdAt={String(item.attributes.createdAt)}
-                    price={item.attributes.price}
-                    itemId={item.attributes.itemId}
-                    query={query}
-
-                  />
+                  item.attributes.price.includes(query) || item.attributes.tokenId.includes(query) ?
+                    <MarketItem
+                      uri={item.attributes.uri}
+                      minter={item.attributes.minter}
+                      seller={item.attributes.seller}
+                      address={item.attributes.nftContract}
+                      tokenId={item.attributes.tokenId}
+                      owner={item.attributes.seller}
+                      onMarketplace={true}
+                      createdAt={String(item.attributes.createdAt)}
+                      price={item.attributes.price}
+                      itemId={item.attributes.itemId}
+                      query={query}
+                    />
+                    : <div></div>
                 )
               : <Space size="middle" style={{
                 height: "100vh",
@@ -125,8 +126,6 @@ function NFTTokenIds({ query, setHint }) {
         </TabPane>
 
       </Tabs>
-
-
     </>
   );
 

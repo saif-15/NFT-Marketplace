@@ -71,9 +71,8 @@ function NFTBalance({ query, setHint }) {
       <div style={styles.parent}>
         {!loading ?
           userNFTs.length != 0 ?
-            userNFTs.map((item) => {
-
-              return <NFTCard
+            userNFTs.map((item) =>
+              <NFTCard
                 uri={item.attributes.uri}
                 minter={item.attributes.minter_of_nft}
                 address={item.attributes.address}
@@ -87,7 +86,7 @@ function NFTBalance({ query, setHint }) {
                 callback={getUserNFTs}
                 query={query}
               />
-            })
+            )
             : <h2>You have 0 NFTs Owned or Minted</h2>
           :
           <Space size="middle" style={{

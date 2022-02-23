@@ -1,28 +1,14 @@
-import { Select } from 'antd';
-import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
-import { getCollectionsByChain } from "helpers/collections";
-import { useState } from 'react';
-import Search from 'antd/lib/input/Search';
-
+import Input from 'antd/lib/input/Input';
 
 function SearchCollections({ placeholder, setQuery }) {
-    const { Option } = Select;
-    const { chainId } = useMoralisDapp();
-    const NFTCollections = getCollectionsByChain(chainId);
-    const [searchQuery, setSearchQuery] = useState("")
-
-
-
-
-
     return (
         <>
-            <Search
-                onChange={(e) => setQuery(e.value)}
-                suffix={null}
+            <Input
+                onChange={(e) => setQuery(e.target.value)}
+                bordered={false}
                 style={{
-                    width: "500px",
-                    marginLeft: "10px"
+                    width: "350px",
+                    marginLeft: "10px",
                 }}
                 placeholder={placeholder}
                 optionFilterProp="children"
