@@ -13,6 +13,8 @@ git clone https://github.com/saif-15/NFT-Marketplace.git
 ```sh
 npm install i
 ```
+💿 Create .env file in root dir and paste the following code.Get the API keys from Moralis Dashboard
+
 
 ```sh
 REACT_APP_MORALIS_APPLICATION_ID = xxxxxxxxxxxx
