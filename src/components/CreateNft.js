@@ -18,9 +18,6 @@ function CreateNft() {
     const history = useHistory();
     const contractProcessor = useWeb3ExecuteFunction();
 
-
-
-
     const mintNFT = async (tokenUri) => {
         let options = {
             contractAddress: contractAddresses.nftContract,
@@ -48,16 +45,17 @@ function CreateNft() {
                 });
                 setTimeout(() => {
                     modal.destroy();
+                    setLoading(false);
                 }, 2000);
-                setLoading(false);
+
             }
         })
     }
 
 
     const uploadNFT = async () => {
+        setLoading(true);
         if (name.trim().length > 0 && desc.trim().length > 0 && selectedImage !== null) {
-            setLoading(true);
 
             const nftFile = new Moralis.File("nft.jpg", selectedImage)
             await nftFile.saveIPFS();
@@ -77,19 +75,21 @@ function CreateNft() {
             console.log(nftMetadataPath);
             const receipt = await mintNFT(nftMetadataPath);
             console.log(receipt);
-
-            setLoading(false);
-            history.push("/NFTMarketPlace")
+            history.push("#")
 
         } else {
             const modal = Modal.error({
                 title: "Error!",
                 content: `Please Fill The fields correctly`,
             });
+
             setTimeout(() => {
                 modal.destroy();
+                setLoading(false);
             }, 3000);
+
         }
+
     }
 
 
@@ -115,7 +115,7 @@ function CreateNft() {
         heading: {
             fontSize: "35px",
             marginTop: "40px",
-            fontWeight:"700"
+            fontWeight: "700"
 
         },
         paras: {
@@ -148,7 +148,7 @@ function CreateNft() {
 
                 <Input
                     style={{
-                        fontWeight:"600",
+                        fontWeight: "600",
                         fontSize: "16px",
                         margin: "10px",
                         padding: "10px 10px",
@@ -160,6 +160,7 @@ function CreateNft() {
                     width={200}
                     required
                     autoFocus
+                    maxLength={15}
                     placeholder="NFT Title"
                     value={name}
                     onChange={(e) => {
@@ -177,7 +178,7 @@ function CreateNft() {
                         padding: "10px 10px",
                         borderRadius: "5px",
                         color: "#000000",
-                        fontWeight:"600",
+                        fontWeight: "600",
                         fontSize: "16px",
 
                     }}
@@ -185,6 +186,7 @@ function CreateNft() {
                     width={200}
                     required
                     autoFocus
+                    maxLength={100}
                     placeholder="NFT Description"
                     value={desc}
                     onChange={(e) => {
@@ -201,7 +203,7 @@ function CreateNft() {
                         padding: "10px 10px",
                         borderRadius: "5px",
                         color: "#000000",
-                        fontWeight:"600",
+                        fontWeight: "600",
                         fontSize: "16px",
 
                     }}
@@ -230,6 +232,7 @@ function CreateNft() {
                     accept="image/*"
                     onChange={imageChange}
                     backgroundColor={"#FF3434"}
+                    color={"#CCCWWW"}
                 />
 
                 {selectedImage && <Image
@@ -257,12 +260,9 @@ function CreateNft() {
 
                     }}
                     loading={loading}
-                    onClick={() => {
+                    onClick={async () => {
                         console.log('clicked')
-                        uploadNFT();
-                        setLoading(true)
-
-
+                        await uploadNFT();
                     }}
                 >Mint Token</Button>
             </div > :

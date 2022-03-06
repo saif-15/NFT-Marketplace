@@ -1,24 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { getNativeByChain } from "helpers/networks";
-import { getCollectionsByChain } from "helpers/collections";
 import MarketItem from "./MarketItem";
 
 import {
-  useMoralis,
   useMoralisQuery,
-  useNewMoralisObject,
 } from "react-moralis";
-import { Card, Spin, Space, Tabs } from "antd";
-import { useNFTTokenIds } from "hooks/useNFTTokenIds";
-import {
-  FileSearchOutlined,
-  RightCircleOutlined,
-  ShoppingCartOutlined,
-} from "@ant-design/icons";
-import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
-import { getExplorer } from "helpers/networks";
-import { useWeb3ExecuteFunction } from "react-moralis";
-const { Meta } = Card;
+import { Spin, Space, Tabs } from "antd";
+
 const { TabPane } = Tabs;
 
 

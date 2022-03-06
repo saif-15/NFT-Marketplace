@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import img from "assets/img/image-equilibrium.jpg";
 import {
   borderRadius,
   colors,
@@ -30,14 +29,14 @@ export const Card = styled.section`
     border-radius: ${borderRadius.primary};
     overflow: hidden;
     transition: all 0.3s ease-in-out;
-    &:hover {
-      // .card__visible {
-      //   visibility: visible;
-      //   opacity: 0.5;
-      //   transform: translateY(0);
-      //   background-color: ${colors.hoverColor};
-      // }
-    }
+    
+      .card__visible {
+        visibility: ${(props) => props.onMarket ? "visible" : "hidden"};
+        opacity: 0.9;
+        transform: translateY(0);
+        background-color: ${colors.gray};
+      }
+    
     &:hover{
       transform: scale(1.1)
       
@@ -54,8 +53,8 @@ export const Card = styled.section`
     justify-content: center;
     width: 100%;
     height: 100%;
-    .card__visible-icon {
-    }
+    // .card__visible-icon {
+    // }
   }
   .card__text-cont {
     

@@ -33,7 +33,7 @@ function NFTMarketTransactions() {
   const data = transactions.
     data.map((item, index) => ({
       key: index,
-      transaction_hash:  <a href={`https://ropsten.etherscan.io/tx/${item.attributes.hash}`} target={"_blank"}>{turncate(item.attributes.hash ?? "NA")}</a>,
+      transaction_hash: <a href={`https://ropsten.etherscan.io/tx/${item.attributes.hash}`} target={"_blank"}>{turncate(item.attributes.hash ?? "NA")}</a>,
       block_number: turncate(item.attributes.block_number ?? "NA"),
       date: moment(item.attributes.createdAt ?? "NA").format("DD-MM-YY hh:mm A"),
       status: item.attributes.confirmed ?? "NA" ? "Completed" : "In Progress",
@@ -98,7 +98,7 @@ const columns = [
     filterSearch: true
   },
   {
-    title: "To Address",
+    title: "Interacted With (To)",
     key: "to_address",
     dataIndex: "to_address",
     filterSearch: true

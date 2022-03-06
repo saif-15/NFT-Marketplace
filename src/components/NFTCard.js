@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
-import { EthereumIcom, ClockIcon, ViewIcon } from "assets/svg";
-import { BoxShadow, Card as StyledCard } from "./StyledCard";
+import React, { useEffect, useState } from "react";
+import { EthereumIcom } from "assets/svg";
+import { Card as StyledCard } from "./StyledCard";
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
 import { Image, Modal, Alert, Badge, Input, Collapse, Switch } from "antd";
 import abis from "./abis";
@@ -9,7 +9,7 @@ import moment from "moment";
 import contractAddresses from "./contracts";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { colors, Flex } from "assets/style/variables";
-import { FileSearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { FileSearchOutlined, ShoppingCartOutlined, InfoCircleOutlined } from "@ant-design/icons";
 
 import { Button, Card, Tooltip } from "antd";
 
@@ -39,7 +39,11 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
     const parseJson = async (url) => {
         const response = await fetch(url);
         const data = await response.json();
-        setMetadata(data);
+        setMetadata({
+            name: data.name.slice(0, 15),
+            description: data.description.slice(0, 50) + "...",
+            image: data.image
+        });
     }
 
     const turncate = (string) => {
@@ -239,7 +243,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                     type={"number"}
                     inputMode={"decimal"}
                     suffix={"ETH"}
-                    padding={"10px"}
+
                     prefix={<EthereumIcom color={colors.darkBlueCardBG} />}
                     hoverable
                     enterKeyHint="Enter Price in Eth"
@@ -331,6 +335,7 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
     return (
         <>
             <Card
+
                 actions={[
                     <Tooltip title="View On Blockexplorer">
                         <FileSearchOutlined
@@ -342,12 +347,18 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
                             }
                         />
                     </Tooltip>,
-                    <Tooltip title="List NFT for sale">
-                        <ShoppingCartOutlined onClick={() => {
+                    onMarketplace ? <Tooltip title="Already on Sale">
+                        <InfoCircleOutlined onClick={() => {
                             console.log("clicked")
-                            setVisibility(true);
+
                         }} />
-                    </Tooltip>,
+                    </Tooltip>
+                        : <Tooltip title="List NFT for sale">
+                            <ShoppingCartOutlined onClick={() => {
+                                console.log("clicked")
+                                setVisibility(true);
+                            }} />
+                        </Tooltip>,
                 ]}
                 about="this is card"
                 bodyStyle={{ padding: "0" }}
@@ -358,16 +369,17 @@ function NFTCard({ uri, minter, address, tokenId, owner, onMarketplace, transact
 
                 }}
 
-                hoverable
+                hoverable={true}
             >
 
                 <StyledCard
                     image={metadata.image}
+                    onMarket={onMarketplace}
                 >
                     <div className="card__img">
                         <div className="card__visible">
                             <div className="card__visible-icon">
-                                <ViewIcon />
+
                             </div>
                         </div>
                     </div>

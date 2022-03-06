@@ -9,7 +9,7 @@ export const colors = {
   darkBlueLine: "hsl(215, 32%, 27%)",
   White: "hsl(0, 0%, 100%)",
   black: "rgba(0,10, 10, 0.9)",
-
+  gray: "rgba(255,255,255,0.5)",
   hoverColor: "rgba(59, 59, 59, 0.61)"
 
 };
@@ -22,13 +22,13 @@ export const fontSize = {
   large: "22px",
   medium: "16px",
   small: "14px",
-  xlarge:"25px",
+  xlarge: "25px",
 };
 export const fontWidth = {
   light: 300,
   regular: 400,
   semiBold: 600,
-  bold:800,
+  bold: 800,
 };
 
 export const borderRadius = {

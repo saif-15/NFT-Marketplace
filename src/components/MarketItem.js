@@ -1,15 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
-import { EthereumIcom, ClockIcon, ViewIcon } from "assets/svg";
+import React, { useEffect, useState } from "react";
+import { EthereumIcom } from "assets/svg";
 import { BoxShadow, Card as StyledCard } from "./StyledCard";
-import image from "assets/img/image-avatar.png";
-import { Image, Modal, Alert, Badge, Input, Collapse } from "antd";
+import { Image, Modal, Badge, Collapse } from "antd";
 import abis from "./abis";
-import { Typography } from 'antd';
 import moment from "moment";
 import contractAddresses from "./contracts";
 import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
 import { colors, Flex } from "assets/style/variables";
-import { FileSearchOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 import { useMoralisDapp } from "providers/MoralisDappProvider/MoralisDappProvider";
 
 
@@ -26,7 +24,11 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
     const parseJson = async (url) => {
         const response = await fetch(url);
         const data = await response.json();
-        setMetadata(data);
+        setMetadata({
+            name: data.name.slice(0, 15),
+            description: data.description.slice(0, 45) + "...",
+            image: data.image
+        });
     }
 
     const turncate = (string) => {
@@ -195,7 +197,7 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
                     <div className="card__img">
                         <div className="card__visible">
                             <div className="card__visible-icon">
-                                <ViewIcon />
+
                             </div>
                         </div>
                     </div>

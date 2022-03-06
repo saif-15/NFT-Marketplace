@@ -7,6 +7,7 @@ import { useState } from "react";
 import Address from "./Address/Address";
 import { SelectOutlined } from "@ant-design/icons";
 import { getExplorer } from "helpers/networks";
+import { useEffect } from "react/cjs/react.development";
 const styles = {
   account: {
     height: "42px",
@@ -24,7 +25,7 @@ const styles = {
     // color: "#21BF96",
     color: "rgb(255, 255, 244)",
   },
-  
+
 };
 
 function Account() {
@@ -36,12 +37,14 @@ function Account() {
     return (
       <div
         style={styles.account}
-        onClick={() => authenticate({ signingMessage: "Hello World!" })}
+        onClick={() => authenticate({ signingMessage: "Signing in to NFT Universe!" })}
       >
         <p style={styles.text}>Authenticate</p>
       </div>
     );
   }
+
+
 
   return (
     <>

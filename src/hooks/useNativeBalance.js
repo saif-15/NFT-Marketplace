@@ -23,8 +23,9 @@ export const useNativeBalance = (options) => {
   });
 
   useEffect(() => {
+    var balances = {}
     if (data?.balance) {
-      const balances = {
+      balances = {
         inWei: data.balance,
         // missing second argument (decimals) in FromWei function,
         formatted: Moralis.Units.FromWei(data.balance),
