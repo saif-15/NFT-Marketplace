@@ -14,11 +14,11 @@ git clone https://github.com/saif-15/NFT-Marketplace.git
 npm install i
 ```
 
+```sh
 REACT_APP_MORALIS_APPLICATION_ID = xxxxxxxxxxxx
 REACT_APP_MORALIS_SERVER_URL = https://xxxxxx.grandmoralis.com:2053/server
 ```
 
-```
 
 
 🚴‍♂️ Run your App:
