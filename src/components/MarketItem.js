@@ -20,6 +20,7 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
     const contractProcessor = useWeb3ExecuteFunction();
     const [metadata, setMetadata] = useState({});
     const [visibility, setVisibility] = useState(false);
+    const [buyNowStatus, setBuyNowStatus] = useState(false);
     const { walletAddress } = useMoralisDapp();
     const parseJson = async (url) => {
         const response = await fetch(url);
@@ -45,6 +46,7 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
 
 
     const purchaseItem = async () => {
+        setBuyNowStatus(true);
         let options = {
             contractAddress: contractAddresses.marketplaceContract,
             functionName: abis.createMarketSale.functionName,
@@ -66,7 +68,7 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
 
                 setTimeout(() => {
                     modal.destroy();
-
+                    setBuyNowStatus(false);
                     setVisibility(false)
                 }, 2000);
                 //    callback();
@@ -78,6 +80,7 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
                 });
                 setTimeout(() => {
                     modal.destroy();
+                    setBuyNowStatus(false);
                 }, 2000);
             }
 
@@ -101,6 +104,7 @@ function MarketItem({ uri, minter, seller, address, tokenId, owner, onMarketplac
                 onOk={() => setVisibility(false)}
                 footer={[
                     <Button
+                        loading={buyNowStatus}
                         onClick={(e) => purchaseItem()}
                         type={"primary"}
                         color={colors.White}
